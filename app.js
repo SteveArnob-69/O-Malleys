@@ -1,57 +1,63 @@
 const menuData = [
   {
-    category: "🍔 Cooked Food & Snacks",
+    category: "🍺 Drinks & Beverages",
+    items: [
+      { name: "Tomato Juice", price: 35, icon: "🍅" },
+      { name: "Almond Milk", price: 45, icon: "🥛" },
+      { name: "Beer", price: 50, icon: "🍺" },
+      { name: "Irish Coffee", price: 50, icon: "☕" },
+      { name: "Pigeon Milk", price: 50, icon: "🥛" },
+      { name: "Rum", price: 50, icon: "🥃" },
+      { name: "Sprunk", price: 50, icon: "🥤" },
+      { name: "Cider", price: 60, icon: "🍺" },
+      { name: "Guinness", price: 60, icon: "🍺" },
+      { name: "Vodka", price: 60, icon: "🥃" },
+      { name: "Pina Colada", price: 65, icon: "🥥" },
+      { name: "Bloody Mary", price: 70, icon: "🍅" },
+      { name: "Margarita", price: 70, icon: "🍹" },
+      { name: "Tequila", price: 70, icon: "🥃" },
+      { name: "Green Cow", price: 80, icon: "🔋" },
+      { name: "Salty Pigeon", price: 95, icon: "🐦" },
+      { name: "Whiskey", price: 110, icon: "🥃" },
+      { name: "Absinthe", price: 120, icon: "🍸" },
+      { name: "Jameson", price: 120, icon: "🍾" },
+      { name: "Whiskey Sour", price: 125, icon: "🥃" },
+      { name: "Red Wine", price: 150, icon: "🍷" },
+      { name: "Old Fashioned", price: 165, icon: "🥃" },
+      { name: "Rainbow Rush", price: 210, icon: "🌈" },
+      { name: "Virgin Mojito", price: 215, icon: "🌿" },
+      { name: "Mojito", price: 220, icon: "🍸" },
+      { name: "Shirley Temple", price: 220, icon: "🍒" }
+    ]
+  },
+  {
+    category: "🍔 Cooked Food",
     items: [
       { name: "Fries", price: 120, icon: "🍟" },
       { name: "Shepherd's Pie", price: 120, icon: "🥧" },
+      { name: "Fried Eggs", price: 60, icon: "🍳" },
       { name: "Hot Dog", price: 25, icon: "🌭" },
       { name: "Ham Sandwich", price: 25, icon: "🥪" },
-      { name: "Nachos", price: 20, icon: "🌮" },
-      { name: "Salted Peanuts", price: 20, icon: "🥜" }
+      { name: "Nachos", price: 40, icon: "🌮" }
     ]
   },
   {
-    category: "🍸 Custom Drinks",
+    category: "🥜 Chakna",
     items: [
-      { name: "Mojito", price: 220, icon: "🍸" },
-      { name: "Margarita", price: 60, icon: "🍹" },
-      { name: "Virgin Mojito (NA)", price: 215, icon: "🌿" },
-      { name: "Bloody Mary", price: 70, icon: "🍅" },
-      { name: "Whiskey Sour", price: 125, icon: "🥃" },
-      { name: "Old Fashioned", price: 165, icon: "🥃" },
-      { name: "Pina Colada", price: 55, icon: "🥥" },
-      { name: "Rainbow Rush", price: 210, icon: "🌈" },
-      { name: "Salty Pigeon", price: 95, icon: "🐦" },
-      { name: "Shirley Temple (NA)", price: 220, icon: "🍒" }
-    ]
-  },
-  {
-    category: "🍺 Drinks & Beverages",
-    items: [
-      { name: "Irish Coffee", price: 30, icon: "☕" },
-      { name: "Guinness", price: 25, icon: "🍺" },
-      { name: "Jameson", price: 120, icon: "🍾" },
-      { name: "Whiskey", price: 110, icon: "🥃" },
-      { name: "Rum", price: 50, icon: "🥃" },
-      { name: "Vodka", price: 50, icon: "🥃" },
-      { name: "Tequila", price: 60, icon: "🥃" },
-      { name: "Absinthe", price: 120, icon: "🍸" },
-      { name: "Beer", price: 20, icon: "🍺" },
-      { name: "Cider", price: 40, icon: "🍺" },
-      { name: "Green Apple", price: 80, icon: "🍏" },
-      { name: "Red Wine", price: 40, icon: "🍷" },
-      { name: "Pigeon Milk", price: 45, icon: "🥛" },
-      { name: "Almond Milk", price: 45, icon: "🥛" }
+      { name: "Chips", price: 20, icon: "🥔" },
+      { name: "Lime", price: 12, icon: "🍋" },
+      { name: "Salted Peanuts", price: 20, icon: "🥜" },
+      { name: "Olive", price: 20, icon: "🫒" },
+      { name: "S'mores", price: 20, icon: "🍢" },
+      { name: "Skittles", price: 20, icon: "🍬" }
     ]
   },
   {
     category: "📦 Combo Meals",
     items: [
-      { name: "Small Meal", price: 250, icon: "🥡", desc: "Snack + Hot Dog + Beer/Cider/Milk" },
-      { name: "Medium Meal", price: 350, icon: "🍱", desc: "Food + Snack + Rum/Vodka/Tequila" },
-      { name: "Large Meal", price: 450, icon: "🍽️", desc: "Food + Food + Whiskey/Jameson + Snack" },
-      { name: "Special Meal (VIP)", price: 700, icon: "👑", desc: "Premium Drink + Drink + Snack" },
-      { name: "PD / EMS Meal", price: 280, icon: "🚓", desc: "Food + Snack + Beer/Rum/Vodka" }
+      { name: "Halka Pinik", price: 250, icon: "🥡" },
+      { name: "Broken Meal", price: 350, icon: "🍱" },
+      { name: "Special Dizz", price: 450, icon: "🍽️" }
     ]
   }
 ];
@@ -59,14 +65,14 @@ const menuData = [
 const recipes = [
   { name: "Mojito", ingredients: ["1x Mint Leaves", "1x Sprunk", "1x Lime", "1x Rum", "1x Sugar"] },
   { name: "Margarita", ingredients: ["1x Orange", "1x Sugar", "1x Tequila", "2x Lime"] },
-  { name: "Virgin Mojito (NA)", ingredients: ["1x Mint Leaves", "1x Sugar", "1x Sprunk", "2x Lime"] },
+  { name: "Virgin Mojito", ingredients: ["1x Mint Leaves", "1x Sugar", "1x Sprunk", "2x Lime"] },
   { name: "Bloody Mary", ingredients: ["1x Vodka", "1x Salt", "1x Chili", "1x Lemon", "1x Tomato Juice"] },
   { name: "Whiskey Sour", ingredients: ["1x Eggs", "1x Whiskey", "1x Lemon", "1x Sugar"] },
   { name: "Old Fashioned", ingredients: ["1x Angostura Bitters", "1x Whiskey", "1x Orange", "1x Sugar"] },
   { name: "Pina Colada", ingredients: ["1x Rum", "1x Coconut", "1x Pineapple"] },
   { name: "Rainbow Rush", ingredients: ["1x Skittles", "1x Vodka", "1x Sprunk"] },
   { name: "Salty Pigeon", ingredients: ["1x Cocoa Powder", "1x Pigeon Milk", "1x Vodka", "1x Salt"] },
-  { name: "Shirley Temple (NA)", ingredients: ["1x Grenadine", "1x Sprunk", "1x Cherry"] }
+  { name: "Shirley Temple", ingredients: ["1x Grenadine", "1x Sprunk", "1x Cherry"] }
 ];
 
 let orderItems = JSON.parse(localStorage.getItem('omalleyOrder')) || [];
