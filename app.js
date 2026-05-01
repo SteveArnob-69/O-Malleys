@@ -57,7 +57,9 @@ const menuData = [
     items: [
       { name: "Halka Pinik", price: 250, icon: "🥡" },
       { name: "Broken Meal", price: 350, icon: "🍱" },
-      { name: "Special Dizz", price: 450, icon: "🍽️" }
+      { name: "Special Dizz", price: 450, icon: "🍽️" },
+      { name: "Chill Meal", price: 799, icon: "🧊" },
+      { name: "Party Monster", price: 999, icon: "🎉" }
     ]
   }
 ];
