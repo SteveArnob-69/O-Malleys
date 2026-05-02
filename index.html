@@ -28,12 +28,9 @@
 
     <div class="header-actions">
       <button id="recipesBtn" class="btn btn-secondary">📖 Recipes</button>
+      <button id="mealsBtn" class="btn btn-secondary">🍱 Meal Items</button>
       <button id="copyBtn" class="btn btn-primary">📋 Copy Receipt</button>
 
-      <!-- ✅ DISCORD BUTTON -->
-      <button onclick="sendToDiscord()" class="btn btn-secondary">
-        📡 Send to Discord
-      </button>
 
       <button id="clearBtn" class="btn btn-danger">🗑️ Clear All</button>
     </div>
@@ -124,6 +121,20 @@
       </div>
 
       <div class="modal-body" id="recipesList"></div>
+
+    </div>
+  </div>
+
+  <!-- MEALS MODAL -->
+  <div id="mealsModal" class="modal">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h2>Combo Meals</h2>
+        <button class="close-modal-meals">&times;</button>
+      </div>
+
+      <div class="modal-body" id="mealsList"></div>
 
     </div>
   </div>

@@ -8,7 +8,7 @@ const menuData = [
       { name: "Irish Coffee", price: 50, icon: "☕" },
       { name: "Pigeon Milk", price: 50, icon: "🥛" },
       { name: "Rum", price: 50, icon: "🥃" },
-      { name: "Sprunk", price: 50, icon: "🥤" },
+      { name: "Sprunk", price: 100, icon: "🥤" },
       { name: "Cider", price: 60, icon: "🍺" },
       { name: "Guinness", price: 60, icon: "🍺" },
       { name: "Vodka", price: 60, icon: "🥃" },
@@ -77,6 +77,14 @@ const recipes = [
   { name: "Shirley Temple", ingredients: ["1x Grenadine", "1x Sprunk", "1x Cherry"] }
 ];
 
+const meals = [
+  { name: "🍷 Halka Pinik ($250)", ingredients: ["2x Margarita", "2x Fries"] },
+  { name: "💔 Broken Meal ($350)", ingredients: ["2x Jameson", "2x Vodka", "2x Fries"] },
+  { name: "🌀 Special Dizz ($450)", ingredients: ["2x Whiskey Sour", "2x Rainbow Rush", "2x Shepherd’s Pie", "2x Hot Dog"] },
+  { name: "😎 Chill Meal (799)", ingredients: ["3x Fries", "3x Shepherd's Pie", "3x Fried Eggs"] },
+  { name: "🌟 Party Monster ($999)", ingredients: ["4x Shirley Temple", "4x Bloody Mary", "4x Sprunk", "4x Lime", "2x Shepherd’s Pie", "2x Hot Dog", "2x Nachos"] }
+];
+
 let orderItems = JSON.parse(localStorage.getItem('omalleyOrder')) || [];
 
 const quickMenuContainer = document.getElementById('quickMenu');
@@ -89,6 +97,7 @@ const staffInput = document.getElementById('staffInput');
 function init() {
   renderMenu();
   renderRecipes();
+  renderMeals();
   updateOrderDisplay();
 
   discountInput.value = localStorage.getItem('omalleyDiscount') || 0;
@@ -102,17 +111,27 @@ function init() {
   document.getElementById('copyBtn').addEventListener('click', copyReceipt);
 
   const modal = document.getElementById('recipesModal');
+  const mealsModal = document.getElementById('mealsModal');
 
   document.getElementById('recipesBtn').addEventListener('click', () => {
     modal.classList.add('active');
+  });
+
+  document.getElementById('mealsBtn').addEventListener('click', () => {
+    mealsModal.classList.add('active');
   });
 
   document.querySelector('.close-modal').addEventListener('click', () => {
     modal.classList.remove('active');
   });
 
+  document.querySelector('.close-modal-meals').addEventListener('click', () => {
+    mealsModal.classList.remove('active');
+  });
+
   window.addEventListener('click', (e) => {
     if (e.target === modal) modal.classList.remove('active');
+    if (e.target === mealsModal) mealsModal.classList.remove('active');
   });
 }
 
@@ -132,6 +151,7 @@ function renderMenu() {
     group.items.forEach(item => {
       const btn = document.createElement('button');
       btn.className = 'chip';
+      btn.dataset.itemName = item.name;
 
       btn.innerHTML = `
         <span class="chip-name">${item.icon} ${item.name}</span>
@@ -173,6 +193,32 @@ function renderRecipes() {
   });
 }
 
+function renderMeals() {
+  const container = document.getElementById('mealsList');
+  if (!container) return;
+  container.innerHTML = '';
+
+  meals.forEach(meal => {
+    const card = document.createElement('div');
+    card.className = 'recipe-card';
+
+    const title = document.createElement('h4');
+    title.textContent = meal.name;
+
+    const list = document.createElement('ul');
+
+    meal.ingredients.forEach(ing => {
+      const li = document.createElement('li');
+      li.innerHTML = `🔸 ${ing}`;
+      list.appendChild(li);
+    });
+
+    card.appendChild(title);
+    card.appendChild(list);
+    container.appendChild(card);
+  });
+}
+
 function addItem(item) {
   const existing = orderItems.find(i => i.name === item.name);
   if (existing) existing.qty++;
@@ -203,6 +249,7 @@ function updateOrderDisplay() {
   if (!orderItems.length) {
     itemsBody.innerHTML = `<tr><td colspan="5">No items yet.</td></tr>`;
     calculateTotals();
+    updateMenuHighlight();
     return;
   }
 
@@ -224,6 +271,20 @@ function updateOrderDisplay() {
   });
 
   calculateTotals();
+  updateMenuHighlight();
+}
+
+function updateMenuHighlight() {
+  const chips = document.querySelectorAll('.chip');
+  chips.forEach(chip => {
+    const itemName = chip.dataset.itemName;
+    const inCart = orderItems.some(i => i.name === itemName);
+    if (inCart) {
+      chip.classList.add('in-cart');
+    } else {
+      chip.classList.remove('in-cart');
+    }
+  });
 }
 
 function calculateTotals() {
@@ -242,11 +303,33 @@ function clearOrder() {
 }
 
 function copyReceipt() {
-  alert("Receipt copied!");
+  if (!orderItems.length) return alert("Order is empty!");
+  
+  const staffName = staffInput.value.trim();
+  if (!staffName) return alert("Please enter the staff name before copying and sending!");
+
+  const subtotal = orderItems.reduce((a, b) => a + b.price * b.qty, 0);
+  const discount = parseFloat(discountInput.value) || 0;
+  const total = subtotal - subtotal * (discount / 100);
+
+  let itemsText = orderItems.map(i =>
+    `🍽️ ${i.qty}x ${i.name} — $${i.price * i.qty}`
+  ).join("\n");
+
+  const receiptText = `🍻 O'Malley POS 🍻\nStaff: ${staffName}\n\n${itemsText}\n\nSubtotal: $${subtotal}\nDiscount: ${discount}%\nTotal: $${total}`;
+
+  navigator.clipboard.writeText(receiptText).then(() => {
+    sendToDiscord();
+  }).catch(() => {
+    sendToDiscord();
+  });
 }
 
 function sendToDiscord() {
   if (!orderItems.length) return alert("Order is empty!");
+
+  const staffName = staffInput.value.trim();
+  if (!staffName) return alert("Please enter the staff name before sending to Discord!");
 
   const webhookURL = "https://discord.com/api/webhooks/1500113973897592996/b6e1tH5cL_9_rnT1PBh08MrevC8-S0KEVwuVAyvaAUmwlgTrBGuinwkpoAlDdNpuDSM0";
 
@@ -259,15 +342,15 @@ function sendToDiscord() {
   ).join("\n");
 
   const payload = {
-    content: "🍀🧾 **NEW ORDER RECEIVED** 🍻",
-    username: "O'Malley POS",
+    content: "🍀🧾 **Sales History** 🍻",
+    username: `${staffName} | O'Malley POS`,
     avatar_url: "https://i.postimg.cc/XJV5W8dx/Picsart-26-04-28-23-05-58-620.jpg",
     embeds: [
       {
         title: "🍻 Order Summary",
         color: 3066993,
         fields: [
-          { name: "👨‍🍳 Staff", value: staffInput.value || "Unknown", inline: true },
+          { name: "👨‍🍳 Staff", value: staffName, inline: true },
           { name: "🛒 Items", value: itemsText },
           { name: "💵 Subtotal", value: `$${subtotal}`, inline: true },
           { name: "🏷️ Discount", value: `${discount}%`, inline: true },
@@ -283,8 +366,11 @@ function sendToDiscord() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   })
-    .then(() => alert("Sent to Discord!"))
-    .catch(() => alert("Failed"));
+    .then(() => {
+      alert("Receipt copied & Sent to Discord!");
+      clearOrder();
+    })
+    .catch(() => alert("Receipt copied, but failed to send to Discord."));
 }
 
 window.updateQty = updateQty;
