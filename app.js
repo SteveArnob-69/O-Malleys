@@ -85,6 +85,7 @@ const subtotalEl = document.getElementById('subtotal');
 const grandTotalEl = document.getElementById('grandTotal');
 const discountInput = document.getElementById('discountInput');
 const customerInput = document.getElementById('customerInput');
+const staffInput = document.getElementById('staffInput');
 
 function init() {
   renderMenu();
@@ -300,6 +301,62 @@ function copyReceipt() {
   }).catch(err => {
     console.error('Could not copy text: ', err);
     alert('Failed to copy receipt.');
+  });
+}
+
+function sendToDiscord() {
+  if (orderItems.length === 0) {
+    alert("Order is empty!");
+    return;
+  }
+
+  const webhookURL = "https://discord.com/api/webhooks/1500113973897592996/b6e1tH5cL_9_rnT1PBh08MrevC8-S0KEVwuVAyvaAUmwlgTrBGuinwkpoAlDdNpuDSM0";
+
+  const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const discount = parseFloat(discountInput.value) || 0;
+  const discountAmount = subtotal * (discount / 100);
+  const total = Math.max(0, subtotal - discountAmount);
+
+  const customer = customerInput.value.trim() || "N/A";
+  const staff = staffInput.value.trim() || "Unknown";
+
+  let itemsText = orderItems.map(item => 
+    `• ${item.qty}x ${item.name} ($${item.price * item.qty})`
+  ).join("\n");
+
+  const payload = {
+    content: "🧾 **New Order - O'Malley's Pub**",
+    embeds: [
+      {
+        title: "Order Details",
+        color: 2123412,
+        fields: [
+          { name: "Customer", value: customer, inline: true },
+          { name: "Sold By", value: staff, inline: true },
+          { name: "Items", value: itemsText },
+          { name: "Subtotal", value: `$${subtotal}`, inline: true },
+          { name: "Discount", value: `${discount}%`, inline: true },
+          { name: "Total", value: `$${total}`, inline: true }
+        ],
+        footer: {
+          text: new Date().toLocaleString()
+        }
+      }
+    ]
+  };
+
+  fetch(webhookURL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    alert("✅ Sent to Discord!");
+  })
+  .catch(() => {
+    alert("❌ Failed to send.");
   });
 }
 

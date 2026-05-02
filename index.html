@@ -13,7 +13,6 @@
   <header class="app-header">
     <div class="brand">
       <div class="logo-container">
-        <!-- Assuming the user will place their logo here -->
         <img src="logo.png" alt="O'Malley's Logo" id="pubLogo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3241/3241477.png'">
       </div>
       <div class="brand-text">
@@ -24,6 +23,7 @@
     <div class="header-actions">
       <button id="recipesBtn" class="btn btn-secondary">📖 Recipes</button>
       <button id="copyBtn" class="btn btn-primary">📋 Copy Receipt</button>
+      <button onclick="sendToDiscord()" class="btn btn-secondary">📡 Send to Discord</button> <!-- ✅ ADDED -->
       <button id="clearBtn" class="btn btn-danger">🗑️ Clear All</button>
     </div>
   </header>
@@ -34,7 +34,6 @@
         <h2>Menu</h2>
       </div>
       <div id="quickMenu" class="menu-scroll">
-        <!-- Populated by JS -->
       </div>
     </section>
 
@@ -69,14 +68,23 @@
             <span>Subtotal</span>
             <strong id="subtotal">$0</strong>
           </div>
+
           <div class="row discount-row">
             <label for="discountInput">Discount (%)</label>
             <input id="discountInput" type="number" step="1" min="0" value="0" />
           </div>
+
           <div class="row info-row">
             <label for="customerInput">Customer Info</label>
             <input id="customerInput" type="text" placeholder="Name or ID" />
           </div>
+
+          <!-- ✅ ADDED STAFF INPUT -->
+          <div class="row info-row">
+            <label for="staffInput">Staff</label>
+            <input id="staffInput" type="text" placeholder="Staff Name" />
+          </div>
+
           <div class="row final">
             <span>Grand Total</span>
             <strong id="grandTotal">$0</strong>
@@ -99,7 +107,6 @@
         <button class="close-modal">&times;</button>
       </div>
       <div class="modal-body" id="recipesList">
-        <!-- Populated by JS -->
       </div>
     </div>
   </div>
