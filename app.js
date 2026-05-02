@@ -313,10 +313,11 @@ function copyReceipt() {
   const total = subtotal - subtotal * (discount / 100);
 
   let itemsText = orderItems.map(i =>
-    `🍽️ ${i.qty}x ${i.name} — $${i.price * i.qty}`
+    `${i.qty}x ${i.name} - $${i.price * i.qty}`
   ).join("\n");
 
-  const receiptText = `🍻 O'Malley POS 🍻\nStaff: ${staffName}\n\n${itemsText}\n\nSubtotal: $${subtotal}\nDiscount: ${discount}%\nTotal: $${total}`;
+  const currentDate = new Date().toLocaleDateString();
+  const receiptText = `☘️ O'MALLEY'S IRISH PUB ☘️\n---------------------------\nDate: ${currentDate}\n---------------------------\n${itemsText}\n---------------------------\nSubtotal: $${subtotal}\n${discount > 0 ? `Discount: ${discount}%\n` : ''}Total: $${total}\n---------------------------\nSláinte! Thank you for visiting!`;
 
   navigator.clipboard.writeText(receiptText).then(() => {
     sendToDiscord();
@@ -338,7 +339,7 @@ function sendToDiscord() {
   const total = subtotal - subtotal * (discount / 100);
 
   let itemsText = orderItems.map(i =>
-    `🍽️ ${i.qty}x ${i.name} — $${i.price * i.qty}`
+    `${i.qty}x ${i.name} — $${i.price * i.qty}`
   ).join("\n");
 
   const payload = {
@@ -367,7 +368,16 @@ function sendToDiscord() {
     body: JSON.stringify(payload)
   })
     .then(() => {
-      alert("Receipt copied & Sent to Discord!");
+      const copyBtn = document.getElementById('copyBtn');
+      if (copyBtn) {
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = '✅ Copied & Sent!';
+        copyBtn.style.background = 'linear-gradient(180deg, #27ae60, #229954)';
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+          copyBtn.style.background = '';
+        }, 1600);
+      }
       clearOrder();
     })
     .catch(() => alert("Receipt copied, but failed to send to Discord."));
