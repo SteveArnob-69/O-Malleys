@@ -1,8 +1,8 @@
 :root {
-  --primary-color: #062B16; /* Deep Irish Green */
-  --secondary-color: #124A29; /* Lighter Green */
-  --accent-color: #D4AF37; /* Gold */
-  --accent-hover: #F1C40F; /* Bright Gold */
+  --primary-color: #062B16;
+  --secondary-color: #124A29;
+  --accent-color: #D4AF37;
+  --accent-hover: #F1C40F;
   --bg-color: #0d0d0d;
   --panel-bg: #1a1a1a;
   --text-main: #f0f0f0;
@@ -75,7 +75,6 @@ body {
   color: var(--accent-color);
   letter-spacing: 2px;
   text-transform: uppercase;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
 }
 
 .brand-text .subtitle {
@@ -84,9 +83,11 @@ body {
   letter-spacing: 3px;
 }
 
+/* ✅ FIXED BUTTON WRAP */
 .header-actions {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -96,7 +97,7 @@ body {
   font-family: var(--font-body);
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   font-size: 14px;
 }
 
@@ -179,7 +180,7 @@ body {
   min-width: 350px;
 }
 
-/* Menu Groups */
+/* Menu */
 .qm-group {
   margin-bottom: 25px;
 }
@@ -213,32 +214,12 @@ body {
   padding: 12px 10px;
   border-radius: 6px;
   cursor: pointer;
-  text-align: left;
-  transition: all 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 5px;
+  transition: 0.2s;
 }
 
 .chip:hover {
   border-color: var(--accent-color);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-}
-
-.chip:active {
-  transform: translateY(0);
-}
-
-.chip-name {
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.chip-price {
-  color: var(--accent-color);
-  font-size: 13px;
 }
 
 /* Table */
@@ -255,50 +236,37 @@ table {
 
 th, td {
   padding: 12px 8px;
-  text-align: left;
   border-bottom: 1px solid var(--border-color);
 }
 
 th {
   color: var(--text-muted);
   font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 500;
-}
-
-td {
-  font-size: 14px;
 }
 
 .btn-remove {
-  background: none;
-  border: none;
   color: var(--danger-color);
   cursor: pointer;
-  font-size: 18px;
-  opacity: 0.7;
-}
-
-.btn-remove:hover {
-  opacity: 1;
 }
 
 /* Totals */
-.totals-panel {
-  padding: 15px 20px;
-}
-
 .totals-grid {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
+/* ✅ FIXED INPUT ROW */
+.info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 15px;
 }
 
 .row input {
@@ -307,13 +275,16 @@ td {
   color: white;
   padding: 6px 10px;
   border-radius: 4px;
-  width: 120px;
-  text-align: right;
+  width: 100%;
+  text-align: left;
+  transition: 0.2s;
 }
 
+/* ✅ BETTER FOCUS */
 .row input:focus {
   outline: none;
   border-color: var(--accent-color);
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
 }
 
 .final {
@@ -331,105 +302,13 @@ td {
   padding: 20px;
   color: var(--text-muted);
   font-size: 13px;
-  font-family: var(--font-heading);
-}
-
-.only-print {
-  display: none;
 }
 
 /* Modal */
 .modal {
   display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(5px);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
 }
 
 .modal.active {
   display: flex;
-  animation: fadeIn 0.3s ease;
-}
-
-.modal-content {
-  background: var(--panel-bg);
-  border: 1px solid var(--accent-color);
-  border-radius: 8px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 20px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.modal-header h2 {
-  font-family: var(--font-heading);
-  color: var(--accent-color);
-}
-
-.close-modal {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-.modal-body {
-  padding: 20px;
-  overflow-y: auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.recipe-card {
-  background: #222;
-  border-left: 3px solid var(--secondary-color);
-  padding: 15px;
-  border-radius: 4px;
-}
-
-.recipe-card h4 {
-  color: var(--accent-color);
-  margin-bottom: 10px;
-  font-size: 16px;
-}
-
-.recipe-card ul {
-  list-style: none;
-  font-size: 13px;
-  color: #ccc;
-}
-
-.recipe-card ul li {
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-@media (max-width: 900px) {
-  .container {
-    flex-direction: column;
-  }
-  .side-panel {
-    min-width: auto;
-  }
 }
