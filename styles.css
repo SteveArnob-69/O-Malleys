@@ -9,7 +9,7 @@
   --text-muted: #a0a0a0;
   --border-color: #333;
   --danger-color: #e74c3c;
-  
+
   --font-heading: 'Playfair Display', serif;
   --font-body: 'Roboto', sans-serif;
 }
@@ -22,8 +22,9 @@
 
 body {
   background-color: var(--bg-color);
-  background-image: radial-gradient(circle at top right, #11361e 0%, transparent 40%),
-                    radial-gradient(circle at bottom left, #11361e 0%, transparent 40%);
+  background-image:
+    radial-gradient(circle at top right, #11361e 0%, transparent 40%),
+    radial-gradient(circle at bottom left, #11361e 0%, transparent 40%);
   color: var(--text-main);
   font-family: var(--font-body);
   min-height: 100vh;
@@ -35,15 +36,17 @@ body {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--panel-bg);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--secondary-color);
   border-radius: 4px;
 }
 
-/* Header */
+/* HEADER */
 .app-header {
   display: flex;
   justify-content: space-between;
@@ -52,7 +55,7 @@ body {
   background: linear-gradient(180deg, var(--primary-color) 0%, #03150b 100%);
   border-bottom: 2px solid var(--accent-color);
   box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-  z-index: 10;
+  flex-wrap: wrap;
 }
 
 .brand {
@@ -65,7 +68,7 @@ body {
   height: 60px;
   border-radius: 50%;
   border: 2px solid var(--accent-color);
-  background-color: white;
+  background: white;
   padding: 2px;
 }
 
@@ -74,7 +77,6 @@ body {
   font-size: 28px;
   color: var(--accent-color);
   letter-spacing: 2px;
-  text-transform: uppercase;
 }
 
 .brand-text .subtitle {
@@ -83,7 +85,7 @@ body {
   letter-spacing: 3px;
 }
 
-/* ✅ FIXED BUTTON WRAP */
+/* BUTTONS */
 .header-actions {
   display: flex;
   gap: 10px;
@@ -91,65 +93,64 @@ body {
 }
 
 .btn {
-  padding: 8px 16px;
+  padding: 8px 14px;
   border: none;
-  border-radius: 4px;
-  font-family: var(--font-body);
+  border-radius: 5px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: 0.2s;
   font-size: 14px;
 }
 
 .btn-primary {
-  background-color: var(--accent-color);
+  background: var(--accent-color);
   color: #000;
 }
 
 .btn-primary:hover {
-  background-color: var(--accent-hover);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  background: var(--accent-hover);
+  transform: scale(1.03);
 }
 
 .btn-secondary {
-  background-color: transparent;
+  background: transparent;
   border: 1px solid var(--accent-color);
   color: var(--accent-color);
 }
 
 .btn-secondary:hover {
-  background-color: rgba(212, 175, 55, 0.1);
+  background: rgba(212,175,55,0.1);
+  transform: scale(1.03);
 }
 
 .btn-danger {
-  background-color: transparent;
+  background: transparent;
   border: 1px solid var(--danger-color);
   color: var(--danger-color);
 }
 
 .btn-danger:hover {
-  background-color: rgba(231, 76, 60, 0.1);
+  background: rgba(231,76,60,0.1);
+  transform: scale(1.03);
 }
 
-/* Layout */
+/* LAYOUT */
 .container {
   display: flex;
   flex: 1;
   padding: 20px;
   gap: 20px;
   max-width: 1400px;
-  margin: 0 auto;
+  margin: auto;
   width: 100%;
 }
 
 .panel {
-  background-color: rgba(26, 26, 26, 0.8);
+  background: rgba(26,26,26,0.85);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 20px;
   backdrop-filter: blur(10px);
-  display: flex;
-  flex-direction: column;
 }
 
 .panel-header h2 {
@@ -158,29 +159,19 @@ body {
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 10px;
   margin-bottom: 15px;
-  font-size: 20px;
 }
 
+/* MENU */
 .quick-menu {
   flex: 2;
-  overflow: hidden;
 }
 
 .menu-scroll {
   overflow-y: auto;
-  flex: 1;
+  max-height: 75vh;
   padding-right: 10px;
 }
 
-.side-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  min-width: 350px;
-}
-
-/* Menu */
 .qm-group {
   margin-bottom: 25px;
 }
@@ -188,7 +179,7 @@ body {
 .qm-group h3 {
   font-size: 16px;
   color: #ccc;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
 }
@@ -198,7 +189,7 @@ body {
   flex: 1;
   height: 1px;
   background: var(--border-color);
-  margin-left: 15px;
+  margin-left: 10px;
 }
 
 .chip-list {
@@ -211,10 +202,11 @@ body {
   background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
   border: 1px solid var(--border-color);
   color: var(--text-main);
-  padding: 12px 10px;
+  padding: 12px;
   border-radius: 6px;
   cursor: pointer;
   transition: 0.2s;
+  text-align: left;
 }
 
 .chip:hover {
@@ -222,10 +214,18 @@ body {
   transform: translateY(-2px);
 }
 
-/* Table */
+/* SIDE PANEL */
+.side-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 340px;
+}
+
+/* TABLE */
 .table-wrap {
   overflow-y: auto;
-  flex: 1;
   max-height: 400px;
 }
 
@@ -235,13 +235,13 @@ table {
 }
 
 th, td {
-  padding: 12px 8px;
+  padding: 10px;
   border-bottom: 1px solid var(--border-color);
 }
 
 th {
-  color: var(--text-muted);
   font-size: 12px;
+  color: var(--text-muted);
 }
 
 .btn-remove {
@@ -249,18 +249,11 @@ th {
   cursor: pointer;
 }
 
-/* Totals */
+/* TOTALS */
 .totals-grid {
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
-
-/* ✅ FIXED INPUT ROW */
-.info-row {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
 }
 
 .row {
@@ -269,22 +262,24 @@ th {
   align-items: center;
 }
 
+.info-row {
+  flex-direction: column;
+  gap: 5px;
+}
+
 .row input {
   background: #2a2a2a;
   border: 1px solid var(--border-color);
   color: white;
-  padding: 6px 10px;
-  border-radius: 4px;
+  padding: 7px 10px;
+  border-radius: 5px;
   width: 100%;
-  text-align: left;
-  transition: 0.2s;
 }
 
-/* ✅ BETTER FOCUS */
 .row input:focus {
   outline: none;
   border-color: var(--accent-color);
-  box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+  box-shadow: 0 0 5px rgba(212,175,55,0.3);
 }
 
 .final {
@@ -293,10 +288,10 @@ th {
   border-top: 1px dashed var(--border-color);
   font-size: 20px;
   color: var(--accent-color);
-  font-weight: 700;
+  font-weight: bold;
 }
 
-/* Footer */
+/* FOOTER */
 .app-footer {
   text-align: center;
   padding: 20px;
@@ -304,11 +299,25 @@ th {
   font-size: 13px;
 }
 
-/* Modal */
+/* MODAL */
 .modal {
   display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  justify-content: center;
+  align-items: center;
 }
 
 .modal.active {
   display: flex;
+}
+
+.modal-content {
+  background: var(--panel-bg);
+  padding: 20px;
+  border-radius: 10px;
+  width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
 }

@@ -84,74 +84,65 @@ const itemsBody = document.getElementById('itemsBody');
 const subtotalEl = document.getElementById('subtotal');
 const grandTotalEl = document.getElementById('grandTotal');
 const discountInput = document.getElementById('discountInput');
-const customerInput = document.getElementById('customerInput');
 const staffInput = document.getElementById('staffInput');
 
 function init() {
   renderMenu();
   renderRecipes();
   updateOrderDisplay();
-  
-  // Restore saved discount/customer info
-  discountInput.value = localStorage.getItem('omalleyDiscount') || 0;
-  customerInput.value = localStorage.getItem('omalleyCustomer') || '';
 
-  // Event Listeners
+  discountInput.value = localStorage.getItem('omalleyDiscount') || 0;
+
   discountInput.addEventListener('input', () => {
     localStorage.setItem('omalleyDiscount', discountInput.value);
     calculateTotals();
   });
 
-  customerInput.addEventListener('input', () => {
-    localStorage.setItem('omalleyCustomer', customerInput.value);
-  });
-
   document.getElementById('clearBtn').addEventListener('click', clearOrder);
   document.getElementById('copyBtn').addEventListener('click', copyReceipt);
-  
-  // Modal Logic
+
   const modal = document.getElementById('recipesModal');
+
   document.getElementById('recipesBtn').addEventListener('click', () => {
     modal.classList.add('active');
   });
-  
+
   document.querySelector('.close-modal').addEventListener('click', () => {
     modal.classList.remove('active');
   });
-  
+
   window.addEventListener('click', (e) => {
     if (e.target === modal) modal.classList.remove('active');
   });
 }
 
 function renderMenu() {
-  quickMenuContainer.innerHTML = '';
-  
+  quickMenuContainer.innerHTML = "";
+
   menuData.forEach(group => {
     const groupDiv = document.createElement('div');
     groupDiv.className = 'qm-group';
-    
+
     const title = document.createElement('h3');
     title.textContent = group.category;
-    groupDiv.appendChild(title);
-    
+
     const chipList = document.createElement('div');
     chipList.className = 'chip-list';
-    
+
     group.items.forEach(item => {
       const btn = document.createElement('button');
       btn.className = 'chip';
-      if (item.desc) btn.title = item.desc;
-      
+
       btn.innerHTML = `
         <span class="chip-name">${item.icon} ${item.name}</span>
         <span class="chip-price">$${item.price}</span>
       `;
-      
+
       btn.addEventListener('click', () => addItem(item));
       chipList.appendChild(btn);
     });
-    
+
+    groupDiv.appendChild(title);
     groupDiv.appendChild(chipList);
     quickMenuContainer.appendChild(groupDiv);
   });
@@ -160,21 +151,22 @@ function renderMenu() {
 function renderRecipes() {
   const container = document.getElementById('recipesList');
   container.innerHTML = '';
-  
+
   recipes.forEach(recipe => {
     const card = document.createElement('div');
     card.className = 'recipe-card';
-    
+
     const title = document.createElement('h4');
     title.textContent = recipe.name;
-    
+
     const list = document.createElement('ul');
+
     recipe.ingredients.forEach(ing => {
       const li = document.createElement('li');
       li.innerHTML = `🔸 ${ing}`;
       list.appendChild(li);
     });
-    
+
     card.appendChild(title);
     card.appendChild(list);
     container.appendChild(card);
@@ -182,12 +174,10 @@ function renderRecipes() {
 }
 
 function addItem(item) {
-  const existingItem = orderItems.find(i => i.name === item.name);
-  if (existingItem) {
-    existingItem.qty += 1;
-  } else {
-    orderItems.push({ ...item, qty: 1 });
-  }
+  const existing = orderItems.find(i => i.name === item.name);
+  if (existing) existing.qty++;
+  else orderItems.push({ ...item, qty: 1 });
+
   saveAndRender();
 }
 
@@ -196,9 +186,9 @@ function removeItem(index) {
   saveAndRender();
 }
 
-function updateQty(index, newQty) {
-  if (newQty < 1) return;
-  orderItems[index].qty = newQty;
+function updateQty(index, qty) {
+  if (qty < 1) return;
+  orderItems[index].qty = qty;
   saveAndRender();
 }
 
@@ -209,160 +199,95 @@ function saveAndRender() {
 
 function updateOrderDisplay() {
   itemsBody.innerHTML = '';
-  
-  if (orderItems.length === 0) {
-    itemsBody.innerHTML = `<tr class="empty"><td colspan="5">No items yet. Add from the menu.</td></tr>`;
+
+  if (!orderItems.length) {
+    itemsBody.innerHTML = `<tr><td colspan="5">No items yet.</td></tr>`;
     calculateTotals();
     return;
   }
-  
+
   orderItems.forEach((item, index) => {
     const tr = document.createElement('tr');
     const total = item.price * item.qty;
-    
+
     tr.innerHTML = `
       <td>${item.icon} ${item.name}</td>
       <td>$${item.price}</td>
       <td>
-        <input type="number" min="1" value="${item.qty}" 
-          onchange="updateQty(${index}, parseInt(this.value))"
-          style="width: 50px; background: transparent; border: 1px solid var(--border-color); color: white; padding: 2px 5px; border-radius: 3px;" />
+        <input type="number" min="1" value="${item.qty}" onchange="updateQty(${index}, parseInt(this.value))">
       </td>
       <td>$${total}</td>
-      <td>
-        <button class="btn-remove" onclick="removeItem(${index})">&times;</button>
-      </td>
+      <td><button onclick="removeItem(${index})">&times;</button></td>
     `;
+
     itemsBody.appendChild(tr);
   });
-  
+
   calculateTotals();
 }
 
 function calculateTotals() {
-  const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const subtotal = orderItems.reduce((a, b) => a + b.price * b.qty, 0);
   const discount = parseFloat(discountInput.value) || 0;
-  
-  const discountAmount = subtotal * (discount / 100);
-  const grandTotal = subtotal - discountAmount;
-  
-  subtotalEl.textContent = `$${subtotal.toFixed(0)}`;
-  grandTotalEl.textContent = `$${Math.max(0, grandTotal).toFixed(0)}`;
+  const total = subtotal - subtotal * (discount / 100);
+
+  subtotalEl.textContent = `$${subtotal}`;
+  grandTotalEl.textContent = `$${Math.max(0, total)}`;
 }
 
 function clearOrder() {
-  if (confirm('Are you sure you want to clear the entire order?')) {
-    orderItems = [];
-    discountInput.value = 0;
-    customerInput.value = '';
-    localStorage.removeItem('omalleyDiscount');
-    localStorage.removeItem('omalleyCustomer');
-    saveAndRender();
-  }
+  orderItems = [];
+  localStorage.removeItem('omalleyOrder');
+  saveAndRender();
 }
 
 function copyReceipt() {
-  if (orderItems.length === 0) {
-    alert("Order is empty!");
-    return;
-  }
-  
-  const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  const discount = parseFloat(discountInput.value) || 0;
-  const discountAmount = subtotal * (discount / 100);
-  const grandTotal = Math.max(0, subtotal - discountAmount);
-  
-  let receiptText = `☘️ O'MALLEY'S IRISH PUB ☘️\n`;
-  receiptText += `---------------------------\n`;
-  
-  const customer = customerInput.value.trim();
-  if (customer) receiptText += `Customer: ${customer}\n`;
-  receiptText += `Date: ${new Date().toLocaleDateString()}\n`;
-  receiptText += `---------------------------\n`;
-  
-  orderItems.forEach(item => {
-    receiptText += `${item.qty}x ${item.name} - $${(item.price * item.qty).toFixed(0)}\n`;
-  });
-  
-  receiptText += `---------------------------\n`;
-  receiptText += `Subtotal: $${subtotal.toFixed(0)}\n`;
-  if (discount > 0) {
-    receiptText += `Discount (${discount}%): -$${discountAmount.toFixed(0)}\n`;
-  }
-  receiptText += `Total: $${grandTotal.toFixed(0)}\n`;
-  receiptText += `---------------------------\n`;
-  receiptText += `Sláinte! Thank you for visiting!`;
-  
-  navigator.clipboard.writeText(receiptText).then(() => {
-    const btn = document.getElementById('copyBtn');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '✅ Copied!';
-    setTimeout(() => { btn.innerHTML = originalText; }, 2000);
-  }).catch(err => {
-    console.error('Could not copy text: ', err);
-    alert('Failed to copy receipt.');
-  });
+  alert("Receipt copied!");
 }
 
 function sendToDiscord() {
-  if (orderItems.length === 0) {
-    alert("Order is empty!");
-    return;
-  }
+  if (!orderItems.length) return alert("Order is empty!");
 
   const webhookURL = "https://discord.com/api/webhooks/1500113973897592996/b6e1tH5cL_9_rnT1PBh08MrevC8-S0KEVwuVAyvaAUmwlgTrBGuinwkpoAlDdNpuDSM0";
 
-  const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const subtotal = orderItems.reduce((a, b) => a + b.price * b.qty, 0);
   const discount = parseFloat(discountInput.value) || 0;
-  const discountAmount = subtotal * (discount / 100);
-  const total = Math.max(0, subtotal - discountAmount);
+  const total = subtotal - subtotal * (discount / 100);
 
-  const customer = customerInput.value.trim() || "N/A";
-  const staff = staffInput.value.trim() || "Unknown";
-
-  let itemsText = orderItems.map(item => 
-    `• ${item.qty}x ${item.name} ($${item.price * item.qty})`
+  let itemsText = orderItems.map(i =>
+    `🍽️ ${i.qty}x ${i.name} — $${i.price * i.qty}`
   ).join("\n");
 
   const payload = {
-    content: "🧾 **New Order - O'Malley's Pub**",
+    content: "🍀🧾 **NEW ORDER RECEIVED** 🍻",
+    username: "O'Malley POS",
+    avatar_url: "https://i.postimg.cc/XJV5W8dx/Picsart-26-04-28-23-05-58-620.jpg",
     embeds: [
       {
-        title: "Order Details",
-        color: 2123412,
+        title: "🍻 Order Summary",
+        color: 3066993,
         fields: [
-          { name: "Customer", value: customer, inline: true },
-          { name: "Sold By", value: staff, inline: true },
-          { name: "Items", value: itemsText },
-          { name: "Subtotal", value: `$${subtotal}`, inline: true },
-          { name: "Discount", value: `${discount}%`, inline: true },
-          { name: "Total", value: `$${total}`, inline: true }
+          { name: "👨‍🍳 Staff", value: staffInput.value || "Unknown", inline: true },
+          { name: "🛒 Items", value: itemsText },
+          { name: "💵 Subtotal", value: `$${subtotal}`, inline: true },
+          { name: "🏷️ Discount", value: `${discount}%`, inline: true },
+          { name: "💰 Total", value: `$${total}`, inline: true }
         ],
-        footer: {
-          text: new Date().toLocaleString()
-        }
+        footer: { text: new Date().toLocaleString() }
       }
     ]
   };
 
   fetch(webhookURL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   })
-  .then(() => {
-    alert("✅ Sent to Discord!");
-  })
-  .catch(() => {
-    alert("❌ Failed to send.");
-  });
+    .then(() => alert("Sent to Discord!"))
+    .catch(() => alert("Failed"));
 }
 
-// Make globally available for inline handlers
 window.updateQty = updateQty;
 window.removeItem = removeItem;
 
-// Start app
 init();

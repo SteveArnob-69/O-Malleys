@@ -4,46 +4,64 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>O'Malley's Irish Pub POS</title>
+
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <div class="overlay"></div>
-  
+
+  <!-- HEADER -->
   <header class="app-header">
     <div class="brand">
       <div class="logo-container">
-        <img src="logo.png" alt="O'Malley's Logo" id="pubLogo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3241/3241477.png'">
+        <img src="logo.png" alt="O'Malley's Logo"
+          onerror="this.src='https://cdn-icons-png.flaticon.com/512/3241/3241477.png'">
       </div>
+
       <div class="brand-text">
         <h1>O'MALLEY'S</h1>
         <span class="subtitle">IRISH PUB • ESTD 2021</span>
       </div>
     </div>
+
     <div class="header-actions">
       <button id="recipesBtn" class="btn btn-secondary">📖 Recipes</button>
       <button id="copyBtn" class="btn btn-primary">📋 Copy Receipt</button>
-      <button onclick="sendToDiscord()" class="btn btn-secondary">📡 Send to Discord</button> <!-- ✅ ADDED -->
+
+      <!-- ✅ DISCORD BUTTON -->
+      <button onclick="sendToDiscord()" class="btn btn-secondary">
+        📡 Send to Discord
+      </button>
+
       <button id="clearBtn" class="btn btn-danger">🗑️ Clear All</button>
     </div>
   </header>
 
+  <!-- MAIN -->
   <main class="container">
+
+    <!-- MENU -->
     <section class="panel quick-menu">
       <div class="panel-header">
         <h2>Menu</h2>
       </div>
-      <div id="quickMenu" class="menu-scroll">
-      </div>
+
+      <div id="quickMenu" class="menu-scroll"></div>
     </section>
 
+    <!-- SIDE PANEL -->
     <div class="side-panel">
+
+      <!-- ORDER TABLE -->
       <section class="panel receipt-panel">
         <div class="panel-header">
           <h2>Current Order</h2>
         </div>
+
         <div class="table-wrap">
-          <table id="itemsTable">
+          <table>
             <thead>
               <tr>
                 <th>Item</th>
@@ -53,6 +71,7 @@
                 <th></th>
               </tr>
             </thead>
+
             <tbody id="itemsBody">
               <tr class="empty">
                 <td colspan="5">No items yet. Add from the menu.</td>
@@ -62,8 +81,10 @@
         </div>
       </section>
 
+      <!-- TOTALS -->
       <section class="panel totals-panel">
         <div class="totals-grid">
+
           <div class="row">
             <span>Subtotal</span>
             <strong id="subtotal">$0</strong>
@@ -71,15 +92,12 @@
 
           <div class="row discount-row">
             <label for="discountInput">Discount (%)</label>
-            <input id="discountInput" type="number" step="1" min="0" value="0" />
+            <input id="discountInput" type="number" min="0" value="0" />
           </div>
 
-          <div class="row info-row">
-            <label for="customerInput">Customer Info</label>
-            <input id="customerInput" type="text" placeholder="Name or ID" />
-          </div>
+          <!-- ❌ CUSTOMER REMOVED COMPLETELY -->
 
-          <!-- ✅ ADDED STAFF INPUT -->
+          <!-- STAFF -->
           <div class="row info-row">
             <label for="staffInput">Staff</label>
             <input id="staffInput" type="text" placeholder="Staff Name" />
@@ -89,28 +107,28 @@
             <span>Grand Total</span>
             <strong id="grandTotal">$0</strong>
           </div>
+
         </div>
       </section>
-      
-      <section class="panel receipt-output only-print">
-        <h2>Receipt</h2>
-        <div id="receiptText"></div>
-      </section>
+
     </div>
   </main>
 
-  <!-- Modals -->
+  <!-- RECIPES MODAL -->
   <div id="recipesModal" class="modal">
     <div class="modal-content">
+
       <div class="modal-header">
         <h2>Signature Recipes</h2>
         <button class="close-modal">&times;</button>
       </div>
-      <div class="modal-body" id="recipesList">
-      </div>
+
+      <div class="modal-body" id="recipesList"></div>
+
     </div>
   </div>
 
+  <!-- FOOTER -->
   <footer class="app-footer">
     <small>GOOD FOOD • GOOD DRINKS • GOOD TIMES — <em>Sláinte!</em></small>
   </footer>
