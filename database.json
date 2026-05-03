@@ -1,0 +1,19 @@
+{
+  "staffList": [
+    "Steve",
+    "John Doe"
+  ],
+  "staffStats": {
+    "Steve": {
+      "week": 0,
+      "lifetime": 0,
+      "weekKey": "2026-W19"
+    },
+    "John Doe": {
+      "week": 0,
+      "lifetime": 0,
+      "weekKey": "2026-W19"
+    }
+  },
+  "timestamp": "2026-05-03T14:00:00.000Z"
+}
