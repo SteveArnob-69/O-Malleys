@@ -27,11 +27,11 @@
     </div>
 
     <div class="header-actions">
-      <button id="recipesBtn" class="btn btn-secondary">📖 Recipes</button>
+      <!-- ❌ REMOVED RECIPES BUTTON (no longer in JS) -->
+
       <button id="copyBtn" class="btn btn-primary">📋 Copy Receipt</button>
 
-      <!-- ✅ ADDED ID FOR FUTURE CONTROL -->
-      <button id="discordBtn" onclick="sendToDiscord()" class="btn btn-secondary">
+      <button onclick="sendToDiscord()" class="btn btn-secondary">
         📡 Send to Discord
       </button>
 
@@ -74,7 +74,7 @@
 
             <tbody id="itemsBody">
               <tr class="empty">
-                <td colspan="5">No items yet. Add from the menu.</td>
+                <td colspan="5">No items yet.</td>
               </tr>
             </tbody>
           </table>
@@ -95,10 +95,10 @@
             <input id="discountInput" type="number" min="0" value="0" />
           </div>
 
-          <!-- ✅ STAFF INPUT (IMPROVED PLACEHOLDER) -->
+          <!-- STAFF -->
           <div class="row info-row">
             <label for="staffInput">Staff</label>
-            <input id="staffInput" type="text" placeholder="Enter staff name..." />
+            <input id="staffInput" type="text" placeholder="Staff Name" />
           </div>
 
           <div class="row final">
@@ -112,19 +112,7 @@
     </div>
   </main>
 
-  <!-- RECIPES MODAL -->
-  <div id="recipesModal" class="modal">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h2>Signature Recipes</h2>
-        <button class="close-modal">&times;</button>
-      </div>
-
-      <div class="modal-body" id="recipesList"></div>
-
-    </div>
-  </div>
+  <!-- ❌ REMOVED RECIPES MODAL (not used anymore) -->
 
   <!-- FOOTER -->
   <footer class="app-footer">
