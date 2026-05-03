@@ -28,9 +28,12 @@
 
     <div class="header-actions">
       <button id="recipesBtn" class="btn btn-secondary">📖 Recipes</button>
-      <button id="mealsBtn" class="btn btn-secondary">🍱 Meal Items</button>
       <button id="copyBtn" class="btn btn-primary">📋 Copy Receipt</button>
 
+      <!-- ✅ ADDED ID FOR FUTURE CONTROL -->
+      <button id="discordBtn" onclick="sendToDiscord()" class="btn btn-secondary">
+        📡 Send to Discord
+      </button>
 
       <button id="clearBtn" class="btn btn-danger">🗑️ Clear All</button>
     </div>
@@ -92,12 +95,10 @@
             <input id="discountInput" type="number" min="0" value="0" />
           </div>
 
-          <!-- ❌ CUSTOMER REMOVED COMPLETELY -->
-
-          <!-- STAFF -->
+          <!-- ✅ STAFF INPUT (IMPROVED PLACEHOLDER) -->
           <div class="row info-row">
             <label for="staffInput">Staff</label>
-            <input id="staffInput" type="text" placeholder="Staff Name" />
+            <input id="staffInput" type="text" placeholder="Enter staff name..." />
           </div>
 
           <div class="row final">
@@ -121,20 +122,6 @@
       </div>
 
       <div class="modal-body" id="recipesList"></div>
-
-    </div>
-  </div>
-
-  <!-- MEALS MODAL -->
-  <div id="mealsModal" class="modal">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h2>Combo Meals</h2>
-        <button class="close-modal-meals">&times;</button>
-      </div>
-
-      <div class="modal-body" id="mealsList"></div>
 
     </div>
   </div>
