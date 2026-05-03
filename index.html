@@ -27,9 +27,12 @@
     </div>
 
     <div class="header-actions">
+      <button id="addCustomBtn" class="btn btn-secondary">➕ Add Item</button>
       <button id="recipesBtn" class="btn btn-secondary">📖 Recipes</button>
+      <button id="mealsBtn" class="btn btn-secondary">🍱 Meal Items</button>
       <button id="copyBtn" class="btn btn-primary">📋 Copy Receipt</button>
-      <!-- ❌ REMOVED DISCORD BUTTON -->
+
+
       <button id="clearBtn" class="btn btn-danger">🗑️ Clear All</button>
     </div>
   </header>
@@ -56,8 +59,7 @@
         </div>
 
         <div class="table-wrap">
-          <!-- ✅ ADDED ID FOR SAFETY -->
-          <table id="itemsTable">
+          <table>
             <thead>
               <tr>
                 <th>Item</th>
@@ -91,6 +93,8 @@
             <input id="discountInput" type="number" min="0" value="0" />
           </div>
 
+          <!-- ❌ CUSTOMER REMOVED COMPLETELY -->
+
           <!-- STAFF -->
           <div class="row info-row">
             <label for="staffInput">Staff</label>
@@ -118,6 +122,20 @@
       </div>
 
       <div class="modal-body" id="recipesList"></div>
+
+    </div>
+  </div>
+
+  <!-- MEALS MODAL -->
+  <div id="mealsModal" class="modal">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h2>Combo Meals</h2>
+        <button class="close-modal-meals">&times;</button>
+      </div>
+
+      <div class="modal-body" id="mealsList"></div>
 
     </div>
   </div>
