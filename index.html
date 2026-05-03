@@ -27,14 +27,9 @@
     </div>
 
     <div class="header-actions">
-      <!-- ❌ REMOVED RECIPES BUTTON (no longer in JS) -->
-
+      <button id="recipesBtn" class="btn btn-secondary">📖 Recipes</button>
       <button id="copyBtn" class="btn btn-primary">📋 Copy Receipt</button>
-
-      <button onclick="sendToDiscord()" class="btn btn-secondary">
-        📡 Send to Discord
-      </button>
-
+      <!-- ❌ REMOVED DISCORD BUTTON -->
       <button id="clearBtn" class="btn btn-danger">🗑️ Clear All</button>
     </div>
   </header>
@@ -61,7 +56,8 @@
         </div>
 
         <div class="table-wrap">
-          <table>
+          <!-- ✅ ADDED ID FOR SAFETY -->
+          <table id="itemsTable">
             <thead>
               <tr>
                 <th>Item</th>
@@ -74,7 +70,7 @@
 
             <tbody id="itemsBody">
               <tr class="empty">
-                <td colspan="5">No items yet.</td>
+                <td colspan="5">No items yet. Add from the menu.</td>
               </tr>
             </tbody>
           </table>
@@ -112,7 +108,19 @@
     </div>
   </main>
 
-  <!-- ❌ REMOVED RECIPES MODAL (not used anymore) -->
+  <!-- RECIPES MODAL -->
+  <div id="recipesModal" class="modal">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h2>Signature Recipes</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+
+      <div class="modal-body" id="recipesList"></div>
+
+    </div>
+  </div>
 
   <!-- FOOTER -->
   <footer class="app-footer">
