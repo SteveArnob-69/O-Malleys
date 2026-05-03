@@ -139,6 +139,19 @@ function init() {
     if (e.target === modal) modal.classList.remove('active');
     if (e.target === mealsModal) mealsModal.classList.remove('active');
   });
+
+  // Duty button
+  const dutyBtn = document.getElementById('dutyBtn');
+  if (dutyBtn) dutyBtn.addEventListener('click', toggleDuty);
+
+  // Staff select
+  populateStaffSelect();
+  const addStaffBtn = document.getElementById('addStaffBtn');
+  if (addStaffBtn) addStaffBtn.addEventListener('click', addStaff);
+  staffInput.addEventListener('change', updateDutyStats);
+
+  // Restore duty state if was on duty when page closed
+  initDuty();
 }
 
 function renderMenu() {
@@ -391,5 +404,263 @@ function sendToDiscord() {
 
 window.updateQty = updateQty;
 window.removeItem = removeItem;
+
+// ──────────────────────────────────────────────
+// STAFF MANAGEMENT
+// ──────────────────────────────────────────────
+const LS_STAFF_LIST = 'omalley_staff_list';
+
+function getStaffList() {
+  return JSON.parse(localStorage.getItem(LS_STAFF_LIST) || '[]');
+}
+
+function saveStaffList(list) {
+  localStorage.setItem(LS_STAFF_LIST, JSON.stringify(list));
+}
+
+function populateStaffSelect() {
+  const sel = document.getElementById('staffInput');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">\u2014 Select Staff \u2014</option>';
+  getStaffList().forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = name;
+    sel.appendChild(opt);
+  });
+  const active = localStorage.getItem('omalley_duty_active_staff') || '';
+  sel.value = prev || active || '';
+}
+
+function addStaff() {
+  const name = prompt('Enter new staff member name:');
+  if (!name || !name.trim()) return;
+  const trimmed = name.trim();
+  const list = getStaffList();
+  if (list.map(n => n.toLowerCase()).includes(trimmed.toLowerCase())) {
+    return alert(`"${trimmed}" is already in the roster.`);
+  }
+  list.push(trimmed);
+  saveStaffList(list);
+  populateStaffSelect();
+  document.getElementById('staffInput').value = trimmed;
+  // Announce on Discord
+  fetch(DUTY_WEBHOOK, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: "O'Malley's | Staff Manager",
+      avatar_url: "https://i.postimg.cc/XJV5W8dx/Picsart-26-04-28-23-05-58-620.jpg",
+      embeds: [{
+        title: '\u{1F464} New Staff Member Added',
+        description: `**${trimmed}** has been added to the O'Malley's roster and can now clock in.`,
+        color: 0xD4AF37,
+        footer: { text: "O'Malley's Irish Pub \u2022 Staff Manager" },
+        timestamp: new Date().toISOString()
+      }]
+    })
+  }).catch(() => {});
+}
+
+// ──────────────────────────────────────────────
+// DUTY TRACKING
+// ──────────────────────────────────────────────
+const DUTY_WEBHOOK = "https://discord.com/api/webhooks/1500565532674621522/TKZUOuC23Zgwjera0eJkgpJSQaUuQpRh_WZ60ih-R8Pgjdr_dM5jNuCQCybd5BZflOHn";
+
+const LS_DUTY_ACTIVE       = 'omalley_duty_active';
+const LS_DUTY_ACTIVE_STAFF = 'omalley_duty_active_staff';
+const LS_DUTY_START        = 'omalley_duty_start';
+const LS_DUTY_SESSION      = 'omalley_duty_session';
+const LS_DUTY_WEEK         = 'omalley_duty_week';
+const LS_DUTY_LIFETIME     = 'omalley_duty_lifetime';
+const LS_DUTY_WEEK_KEY     = 'omalley_duty_week_key';
+
+let dutyInterval = null;
+
+function sKey(base, name) {
+  return `${base}__${name.replace(/\s+/g, '_').toLowerCase()}`;
+}
+
+function getWeekKey() {
+  const now = new Date();
+  const jan1 = new Date(now.getFullYear(), 0, 1);
+  const week = Math.ceil((((now - jan1) / 86400000) + jan1.getDay() + 1) / 7);
+  return `${now.getFullYear()}-W${String(week).padStart(2, '0')}`;
+}
+
+function fmtSec(s) {
+  s = Math.floor(s);
+  return `${Math.floor(s/3600)}h ${Math.floor((s%3600)/60)}m ${s%60}s`;
+}
+
+function fmtSecLong(s) {
+  s = Math.floor(s);
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+  const p = [];
+  if (h) p.push(`${h} hour${h !== 1 ? 's' : ''}`);
+  if (m) p.push(`${m} minute${m !== 1 ? 's' : ''}`);
+  p.push(`${sec} second${sec !== 1 ? 's' : ''}`);
+  return p.join(', ');
+}
+
+function getDutyState() {
+  return {
+    active:      localStorage.getItem(LS_DUTY_ACTIVE) === 'true',
+    activeStaff: localStorage.getItem(LS_DUTY_ACTIVE_STAFF) || '',
+    start:       parseInt(localStorage.getItem(LS_DUTY_START) || '0'),
+  };
+}
+
+function getStaffTimes(name) {
+  const wk = getWeekKey();
+  if ((localStorage.getItem(sKey(LS_DUTY_WEEK_KEY, name)) || '') !== wk) {
+    localStorage.setItem(sKey(LS_DUTY_WEEK_KEY, name), wk);
+    localStorage.setItem(sKey(LS_DUTY_WEEK, name), '0');
+  }
+  return {
+    session:  parseFloat(localStorage.getItem(sKey(LS_DUTY_SESSION,  name)) || '0'),
+    week:     parseFloat(localStorage.getItem(sKey(LS_DUTY_WEEK,     name)) || '0'),
+    lifetime: parseFloat(localStorage.getItem(sKey(LS_DUTY_LIFETIME, name)) || '0'),
+  };
+}
+
+function saveStaffTimes(name, session, week, lifetime) {
+  localStorage.setItem(sKey(LS_DUTY_SESSION,  name), session.toString());
+  localStorage.setItem(sKey(LS_DUTY_WEEK,     name), week.toString());
+  localStorage.setItem(sKey(LS_DUTY_LIFETIME, name), lifetime.toString());
+}
+
+function initDuty() {
+  const state = getDutyState();
+  updateDutyUI(state.active);
+  if (state.active && state.activeStaff) {
+    const sel = document.getElementById('staffInput');
+    if (sel) sel.value = state.activeStaff;
+    startDutyTick();
+  }
+  updateDutyStats();
+}
+
+function startDutyTick() {
+  if (dutyInterval) clearInterval(dutyInterval);
+  dutyInterval = setInterval(updateDutyStats, 1000);
+}
+
+function updateDutyStats() {
+  const state = getDutyState();
+  const selectedName = staffInput.value.trim();
+  const who = selectedName || state.activeStaff; // Show selected, fallback to active
+  
+  let sess = 0, wk = 0, life = 0;
+  if (who) {
+    const t = getStaffTimes(who);
+    // If the person we are LOOKING at is the one ON DUTY, add live elapsed time
+    const elapsed = (state.active && state.activeStaff === who) ? (Date.now() - state.start) / 1000 : 0;
+    sess = t.session  + elapsed;
+    wk   = t.week     + elapsed;
+    life = t.lifetime + elapsed;
+  }
+
+  // Update header badge (only for the person actually on duty)
+  const timerEl = document.getElementById('dutyTimerDisplay');
+  if (timerEl) {
+    if (state.active && state.activeStaff) {
+      const activeT = getStaffTimes(state.activeStaff);
+      const activeElapsed = (Date.now() - state.start) / 1000;
+      timerEl.textContent = `\u23F1 ${fmtSec(activeT.session + activeElapsed)}`;
+    } else {
+      timerEl.textContent = '';
+    }
+  }
+
+  const el = id => document.getElementById(id);
+  if (el('statSession'))  el('statSession').textContent  = fmtSec(sess);
+  if (el('statWeek'))     el('statWeek').textContent     = fmtSec(wk);
+  if (el('statLifetime')) el('statLifetime').textContent = fmtSec(life);
+}
+
+function updateDutyUI(isOn) {
+  const btn = document.getElementById('dutyBtn');
+  if (!btn) return;
+  btn.textContent = isOn ? '\uD83D\uDFE2 On Duty' : '\uD83D\uDD52 On Duty';
+  btn.classList.toggle('duty-active', isOn);
+}
+
+function toggleDuty() {
+  const state = getDutyState();
+  const name = staffInput.value.trim();
+  if (!name) return alert('Please select a staff member first!');
+
+  if (!state.active) {
+    // ── CLOCK IN ──
+    const t = getStaffTimes(name);
+    // Reset session for a fresh start
+    saveStaffTimes(name, 0, t.week, t.lifetime);
+    
+    localStorage.setItem(LS_DUTY_ACTIVE, 'true');
+    localStorage.setItem(LS_DUTY_ACTIVE_STAFF, name);
+    localStorage.setItem(LS_DUTY_START, Date.now().toString());
+    
+    updateDutyUI(true);
+    startDutyTick();
+    sendDutyMessage('ON', name, 0, t.week, t.lifetime);
+  } else {
+    if (state.activeStaff !== name) {
+      return alert(`${state.activeStaff} is currently on duty. Ask them to clock out first.`);
+    }
+    // ── CLOCK OUT ──
+    const elapsed = (Date.now() - state.start) / 1000;
+    const t = getStaffTimes(name);
+    const newSess = t.session + elapsed;
+    const newWk   = t.week    + elapsed;
+    const newLife = t.lifetime + elapsed;
+    
+    saveStaffTimes(name, newSess, newWk, newLife);
+    
+    localStorage.setItem(LS_DUTY_ACTIVE, 'false');
+    localStorage.removeItem(LS_DUTY_ACTIVE_STAFF);
+    localStorage.removeItem(LS_DUTY_START);
+    
+    if (dutyInterval) { clearInterval(dutyInterval); dutyInterval = null; }
+    updateDutyUI(false);
+    updateDutyStats();
+    sendDutyMessage('OFF', name, newSess, newWk, newLife);
+  }
+}
+
+function sendDutyMessage(type, name, sess, wk, life) {
+  const isOn  = type === 'ON';
+  const color = isOn ? 0x2ECC71 : 0xE74C3C;
+  const emoji = isOn ? '\uD83D\uDFE2' : '\uD83D\uDD34';
+  const now   = new Date().toLocaleString();
+
+  const fields = isOn ? [
+    { name: '\u23F1 Clocked In At',   value: now,              inline: false },
+    { name: '\uD83D\uDCC5 This Week So Far',    value: fmtSecLong(wk),   inline: true },
+    { name: '\uD83C\uDF10 Lifetime Total',        value: fmtSecLong(life), inline: true },
+  ] : [
+    { name: '\u23F1 Clocked Out At',  value: now,              inline: false },
+    { name: '\u23F3 Shift Duration',  value: `**${fmtSecLong(sess)}**`, inline: false },
+    { name: '\uD83D\uDCC5 Total This Week',    value: fmtSecLong(wk),   inline: true },
+    { name: '\uD83C\uDF10 Lifetime Total',     value: fmtSecLong(life), inline: true },
+  ];
+
+  fetch(DUTY_WEBHOOK, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: `${name} | O'Malley's`,
+      avatar_url: "https://i.postimg.cc/XJV5W8dx/Picsart-26-04-28-23-05-58-620.jpg",
+      embeds: [{
+        title: `${emoji} ${name} is now ${isOn ? 'ON DUTY' : 'OFF DUTY'}`,
+        description: isOn ? `*Have a great shift at O'Malley's!*` : `*Shift completed. Great work today!*`,
+        color,
+        fields,
+        footer: { text: "O'Malley's Irish Pub \u2022 Duty Tracker" },
+        timestamp: new Date().toISOString()
+      }]
+    })
+  }).catch(() => console.warn('Duty webhook failed'));
+}
 
 init();

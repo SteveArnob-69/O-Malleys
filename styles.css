@@ -134,6 +134,84 @@ body {
   transform: scale(1.03);
 }
 
+/* ON DUTY BUTTON */
+.btn-success {
+  background: transparent;
+  border: 1px solid #2ecc71;
+  color: #2ecc71;
+  transition: 0.2s;
+}
+
+.btn-success:hover {
+  background: rgba(46,204,113,0.12);
+  transform: scale(1.03);
+}
+
+.btn-success.duty-active {
+  background: linear-gradient(135deg, #1a5c38, #27ae60);
+  border-color: #2ecc71;
+  color: #fff;
+  animation: dutyPulse 2s ease-in-out infinite;
+  box-shadow: 0 0 12px rgba(46, 204, 113, 0.45);
+}
+
+@keyframes dutyPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(46, 204, 113, 0.4); }
+  50%       { box-shadow: 0 0 22px rgba(46, 204, 113, 0.85); }
+}
+
+/* LIVE TIMER BADGE */
+.duty-timer {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2ecc71;
+  background: rgba(46, 204, 113, 0.1);
+  border: 1px solid rgba(46, 204, 113, 0.3);
+  border-radius: 20px;
+  padding: 4px 14px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* DUTY STATS PANEL */
+.duty-stats-panel { padding: 16px 20px; }
+
+.duty-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.duty-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(46, 204, 113, 0.05);
+  border: 1px solid rgba(46, 204, 113, 0.15);
+  border-radius: 8px;
+  padding: 10px 8px;
+  text-align: center;
+  gap: 4px;
+}
+
+.duty-stat-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.duty-stat-item strong {
+  font-size: 13px;
+  color: #2ecc71;
+  font-weight: 600;
+}
+
+
 /* LAYOUT */
 .container {
   display: flex;
@@ -308,6 +386,39 @@ td input[type="number"]:focus {
   outline: none;
   border-color: var(--accent-color);
   box-shadow: 0 0 5px rgba(212,175,55,0.3);
+}
+
+/* Staff select */
+.staff-select-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.staff-select-wrap select {
+  flex: 1;
+  background: #2a2a2a;
+  border: 1px solid var(--border-color);
+  color: white;
+  padding: 7px 10px;
+  border-radius: 5px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  appearance: auto;
+}
+
+.staff-select-wrap select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 5px rgba(212,175,55,0.3);
+}
+
+.btn-sm {
+  padding: 6px 10px;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .final {

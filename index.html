@@ -31,9 +31,9 @@
       <button id="recipesBtn" class="btn btn-secondary">📖 Recipes</button>
       <button id="mealsBtn" class="btn btn-secondary">🍱 Meal Items</button>
       <button id="copyBtn" class="btn btn-primary">📋 Copy Receipt</button>
-
-
+      <button id="dutyBtn" class="btn btn-success">🕒 On Duty</button>
       <button id="clearBtn" class="btn btn-danger">🗑️ Clear All</button>
+      <span id="dutyTimerDisplay" class="duty-timer"></span>
     </div>
   </header>
 
@@ -98,7 +98,12 @@
           <!-- STAFF -->
           <div class="row info-row">
             <label for="staffInput">Staff</label>
-            <input id="staffInput" type="text" placeholder="Staff Name" />
+            <div class="staff-select-wrap">
+              <select id="staffInput">
+                <option value="">— Select Staff —</option>
+              </select>
+              <button id="addStaffBtn" class="btn btn-secondary btn-sm" title="Add new staff member">➕ Add Staff</button>
+            </div>
           </div>
 
           <div class="row final">
@@ -106,6 +111,25 @@
             <strong id="grandTotal">$0</strong>
           </div>
 
+        </div>
+      </section>
+
+      <!-- DUTY STATS -->
+      <section class="panel duty-stats-panel">
+        <div class="panel-header"><h2>⏱️ Duty Stats</h2></div>
+        <div class="duty-stats-grid">
+          <div class="duty-stat-item">
+            <span class="duty-stat-label">This Session</span>
+            <strong id="statSession">0h 0m 0s</strong>
+          </div>
+          <div class="duty-stat-item">
+            <span class="duty-stat-label">This Week</span>
+            <strong id="statWeek">0h 0m 0s</strong>
+          </div>
+          <div class="duty-stat-item">
+            <span class="duty-stat-label">Lifetime</span>
+            <strong id="statLifetime">0h 0m 0s</strong>
+          </div>
         </div>
       </section>
 
