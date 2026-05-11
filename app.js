@@ -336,7 +336,7 @@ function copyReceipt() {
   ).join("\n");
 
   const currentDate = new Date().toLocaleDateString();
-  const receiptText = `☘️ O'MALLEY'S IRISH PUB ☘️\n---------------------------\nDate: ${currentDate}\n---------------------------\n${itemsText}\n---------------------------\nSubtotal: $${subtotal}\n${discount > 0 ? `Discount: ${discount}%\n` : ''}Total: $${total}\n---------------------------\nSláinte! Thank you for visiting!`;
+  const receiptText = ` O'MALLEY'S IRISH PUB \n---------------------------\nDate: ${currentDate}\n---------------------------\n${itemsText}\n---------------------------\nSubtotal: $${subtotal}\n${discount > 0 ? `Discount: ${discount}%\n` : ''}Total: $${total}\n---------------------------\nSláinte! Thank you for visiting!`;
 
   navigator.clipboard.writeText(receiptText).then(() => {
     sendToDiscord();
